@@ -55,12 +55,12 @@ const Chatbox = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 flex gap-8 space-container">
+    <div className="min-h-screen p-8 flex gap-6">
       {/* Camera Section - Smaller */}
-      <div className="w-80 flex flex-col space-y-6">
-        <Card className="glass p-8 space-y-6 cosmic-glow">
+      <div className="w-80 flex flex-col space-y-4">
+        <Card className="glass p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-space font-medium tracking-wide">Camera Feed</h3>
+            <h3 className="text-lg font-semibold">Camera Feed</h3>
             <Button
               variant="outline"
               size="sm"
@@ -90,9 +90,9 @@ const Chatbox = () => {
           </div>
         </Card>
 
-        <Card className="glass p-6 cosmic-glow">
-          <h4 className="font-space font-medium mb-4 text-secondary tracking-wide">Crew Status</h4>
-          <p className="text-sm text-muted-foreground mb-4 font-light">
+        <Card className="glass p-4">
+          <h4 className="font-medium mb-2 text-secondary">Crew Status</h4>
+          <p className="text-sm text-muted-foreground mb-2">
             {isCameraOn ? "Monitoring psychological & physical state..." : "Turn on camera for health monitoring"}
           </p>
           {isCameraOn && (
@@ -111,17 +111,17 @@ const Chatbox = () => {
 
       {/* Chat Section - Main Focus */}
       <div className="flex-1 flex flex-col">
-        <Card className="glass flex-1 flex flex-col p-8 cosmic-glow">
-          <div className="mb-8">
-            <h2 className="text-3xl font-space font-light gradient-text mb-2 tracking-wide">MAITRI Assistant</h2>
-            <p className="text-muted-foreground font-light tracking-wide">
+        <Card className="glass flex-1 flex flex-col p-6">
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold gradient-text">MAITRI Assistant</h2>
+            <p className="text-muted-foreground">
               Astronaut well-being monitoring & support system
             </p>
           </div>
 
           {/* Messages */}
-          <ScrollArea className="flex-1 mb-6 pr-4">
-            <div className="space-y-6">
+          <ScrollArea className="flex-1 mb-4 pr-4">
+            <div className="space-y-4">
               {messages.map((message) => (
                 <div
                   key={message.id}
@@ -132,14 +132,14 @@ const Chatbox = () => {
                 >
                   <div
                     className={cn(
-                      "max-w-[75%] p-6 rounded-3xl smooth-transition",
+                      "max-w-[80%] p-4 rounded-2xl smooth-transition",
                       message.sender === "user"
-                        ? "bg-gradient-primary text-primary-foreground ml-16 cosmic-glow"
-                        : "glass mr-16 cosmic-glow"
+                        ? "bg-primary text-primary-foreground ml-12"
+                        : "glass mr-12"
                     )}
                   >
-                    <p className="font-light leading-relaxed">{message.text}</p>
-                    <span className="text-xs opacity-60 mt-3 block font-light">
+                    <p className="text-sm">{message.text}</p>
+                    <span className="text-xs opacity-70 mt-2 block">
                       {message.timestamp.toLocaleTimeString()}
                     </span>
                   </div>
@@ -149,20 +149,20 @@ const Chatbox = () => {
           </ScrollArea>
 
           {/* Message Input */}
-          <div className="flex space-x-4">
+          <div className="flex space-x-2">
             <Input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Report your status or concerns..."
-              className="flex-1 glass border-0 p-4 rounded-2xl font-light cosmic-glow"
+              className="flex-1 glass border-0"
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
             />
             <Button
               onClick={handleSendMessage}
-              className="px-8 py-4 bg-gradient-primary hover:scale-105 smooth-transition rounded-2xl cosmic-glow"
+              className="px-6 bg-gradient-primary hover:scale-105 smooth-transition"
               disabled={!newMessage.trim()}
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4" />
             </Button>
           </div>
         </Card>
