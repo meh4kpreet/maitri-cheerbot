@@ -17,7 +17,7 @@ const Chatbox = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      text: "Hello! I'm here to provide emotional support based on what I can see. How are you feeling today?",
+      text: "Hello, crew member! I'm MAITRI, your AI assistant for psychological and physical well-being. I'm here to monitor your emotional state and provide support during your mission. How are you feeling today?",
       sender: "ai",
       timestamp: new Date(),
     },
@@ -42,7 +42,7 @@ const Chatbox = () => {
     setTimeout(() => {
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: "I understand how you're feeling. Based on your expression and words, I'm here to support you. Would you like to talk about what's on your mind?",
+        text: "I've analyzed your emotional state and vital signs. As part of my mission support protocol, I'm here to help maintain your psychological balance. Would you like to discuss any concerns or discomfort you're experiencing?",
         sender: "ai",
         timestamp: new Date(),
       };
@@ -91,9 +91,9 @@ const Chatbox = () => {
         </Card>
 
         <Card className="glass p-4">
-          <h4 className="font-medium mb-2 text-secondary">Emotion Status</h4>
+          <h4 className="font-medium mb-2 text-secondary">Crew Status</h4>
           <p className="text-sm text-muted-foreground mb-2">
-            {isCameraOn ? "Analyzing emotional state..." : "Turn on camera to begin analysis"}
+            {isCameraOn ? "Monitoring psychological & physical state..." : "Turn on camera for health monitoring"}
           </p>
           {isCameraOn && (
             <div className="space-y-1">
@@ -113,9 +113,9 @@ const Chatbox = () => {
       <div className="flex-1 flex flex-col">
         <Card className="glass flex-1 flex flex-col p-6">
           <div className="mb-4">
-            <h2 className="text-2xl font-bold gradient-text">AI Emotional Support</h2>
+            <h2 className="text-2xl font-bold gradient-text">MAITRI Assistant</h2>
             <p className="text-muted-foreground">
-              Ready to assist when the camera is live
+              Astronaut well-being monitoring & support system
             </p>
           </div>
 
@@ -153,7 +153,7 @@ const Chatbox = () => {
             <Input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Share how you're feeling..."
+              placeholder="Report your status or concerns..."
               className="flex-1 glass border-0"
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
             />
