@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Camera, CameraOff } from "lucide-react";
+import { Send, Camera, CameraOff, Play, Square, Upload, Video } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -23,7 +23,9 @@ const Chatbox = () => {
     },
   ]);
   const [newMessage, setNewMessage] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(false);
+  const [uploadedVideo, setUploadedVideo] = useState<File | null>(null);
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
@@ -50,62 +52,98 @@ const Chatbox = () => {
     }, 1000);
   };
 
-  const toggleCamera = () => {
-    setIsCameraOn(!isCameraOn);
+  const toggleRecording = () => {
+    const newRecordingState = !isRecording;
+    setIsRecording(newRecordingState);
+    // Auto-activate camera when recording starts
+    setIsCameraOn(newRecordingState);
+  };
+
+  const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('video/')) {
+      setUploadedVideo(file);
+      setIsCameraOn(true); // Activate camera when video is uploaded
+    }
   };
 
   return (
     <div className="min-h-screen p-8 flex gap-6">
-      {/* Camera Section - Smaller */}
+      {/* Recording Section - Smaller */}
       <div className="w-80 flex flex-col space-y-4">
         <Card className="glass p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Camera Feed</h3>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleCamera}
-              className={cn(
-                "smooth-transition",
-                isCameraOn ? "bg-primary text-primary-foreground" : ""
-              )}
-            >
-              {isCameraOn ? <Camera className="w-4 h-4" /> : <CameraOff className="w-4 h-4" />}
-            </Button>
+            <h3 className="text-lg font-semibold">Recording Area</h3>
+            <div className="flex gap-2">
+              <input
+                type="file"
+                accept="video/*"
+                onChange={handleVideoUpload}
+                className="hidden"
+                id="video-upload"
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => document.getElementById('video-upload')?.click()}
+              >
+                <Upload className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
           
           <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-            {isCameraOn ? (
+            {uploadedVideo ? (
+              <div className="text-center space-y-2">
+                <Video className="w-8 h-8 mx-auto text-primary" />
+                <p className="text-xs text-muted-foreground">Video uploaded</p>
+                <p className="text-xs text-primary font-medium">{uploadedVideo.name}</p>
+              </div>
+            ) : isCameraOn ? (
               <div className="text-center space-y-2">
                 <Camera className="w-8 h-8 mx-auto text-primary" />
-                <p className="text-sm text-muted-foreground">Camera is live</p>
-                <div className="w-2 h-2 bg-primary rounded-full mx-auto animate-pulse" />
+                <p className="text-sm text-muted-foreground">
+                  {isRecording ? "Recording..." : "Camera ready"}
+                </p>
+                {isRecording && (
+                  <div className="w-2 h-2 bg-red-500 rounded-full mx-auto animate-pulse" />
+                )}
               </div>
             ) : (
               <div className="text-center space-y-2">
                 <CameraOff className="w-8 h-8 mx-auto text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Camera is off</p>
+                <p className="text-sm text-muted-foreground">Start recording or upload video</p>
               </div>
             )}
           </div>
         </Card>
 
         <Card className="glass p-4">
-          <h4 className="font-medium mb-2 text-secondary">Crew Status</h4>
-          <p className="text-sm text-muted-foreground mb-2">
-            {isCameraOn ? "Monitoring psychological & physical state..." : "Turn on camera for health monitoring"}
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-medium text-secondary">Recording Controls</h4>
+          </div>
+          <div className="flex justify-center gap-3">
+            <Button
+              variant={isRecording ? "destructive" : "default"}
+              size="sm"
+              onClick={toggleRecording}
+              className="smooth-transition"
+            >
+              {isRecording ? (
+                <Square className="w-4 h-4" />
+              ) : (
+                <Play className="w-4 h-4" />
+              )}
+              <span className="ml-2">
+                {isRecording ? "Stop" : "Start"}
+              </span>
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 text-center">
+            {isRecording ? "Recording in progress..." : 
+             uploadedVideo ? "Video ready for analysis" :
+             "Press start to begin recording"}
           </p>
-          {isCameraOn && (
-            <div className="space-y-1">
-              <div className="flex justify-between text-sm">
-                <span>Happy</span>
-                <span className="text-primary">65%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-1">
-                <div className="bg-primary h-1 rounded-full w-[65%]" />
-              </div>
-            </div>
-          )}
         </Card>
       </div>
 
