@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Camera, CameraOff, Play, Square, Upload, Video } from "lucide-react";
+import { Send, Camera, CameraOff, Play, Square, Upload, Video, Eye, Send as ProcessIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -26,6 +26,9 @@ const Chatbox = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [uploadedVideo, setUploadedVideo] = useState<File | null>(null);
+  const [recordedVideo, setRecordedVideo] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
@@ -57,6 +60,12 @@ const Chatbox = () => {
     setIsRecording(newRecordingState);
     // Auto-activate camera when recording starts
     setIsCameraOn(newRecordingState);
+    
+    // Simulate recording completion and create a mock video URL
+    if (!newRecordingState && isRecording) {
+      // Simulate recorded video (in real implementation, this would be the actual recorded blob URL)
+      setRecordedVideo("mock-recorded-video.mp4");
+    }
   };
 
   const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +73,31 @@ const Chatbox = () => {
     if (file && file.type.startsWith('video/')) {
       setUploadedVideo(file);
       setIsCameraOn(true); // Activate camera when video is uploaded
+      setRecordedVideo(null); // Clear any recorded video
     }
+  };
+
+  const handlePreview = () => {
+    setShowPreview(!showPreview);
+  };
+
+  const handleProcess = async () => {
+    if (!uploadedVideo && !recordedVideo) return;
+    
+    setIsProcessing(true);
+    
+    // Simulate processing
+    setTimeout(() => {
+      setIsProcessing(false);
+      // Add AI response about the processed video
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: `I've analyzed your ${uploadedVideo ? 'uploaded' : 'recorded'} video. Based on facial expressions and body language, I detect you appear calm but slightly fatigued. I recommend taking a 10-minute relaxation break and some deep breathing exercises. Your emotional state shows resilience, which is excellent for mission operations.`,
+        sender: "ai",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, aiResponse]);
+    }, 3000);
   };
 
   return (
@@ -92,12 +125,28 @@ const Chatbox = () => {
             </div>
           </div>
           
-          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-            {uploadedVideo ? (
+          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center overflow-hidden">
+            {showPreview && (uploadedVideo || recordedVideo) ? (
+              <div className="w-full h-full bg-black/20 flex items-center justify-center">
+                <div className="text-center space-y-2">
+                  <Video className="w-12 h-12 mx-auto text-primary" />
+                  <p className="text-sm text-primary font-medium">Video Preview</p>
+                  <p className="text-xs text-muted-foreground">
+                    {uploadedVideo ? uploadedVideo.name : "Recorded Video"}
+                  </p>
+                </div>
+              </div>
+            ) : uploadedVideo ? (
               <div className="text-center space-y-2">
                 <Video className="w-8 h-8 mx-auto text-primary" />
                 <p className="text-xs text-muted-foreground">Video uploaded</p>
                 <p className="text-xs text-primary font-medium">{uploadedVideo.name}</p>
+              </div>
+            ) : recordedVideo ? (
+              <div className="text-center space-y-2">
+                <Video className="w-8 h-8 mx-auto text-primary" />
+                <p className="text-xs text-muted-foreground">Video recorded</p>
+                <p className="text-xs text-primary font-medium">Ready for analysis</p>
               </div>
             ) : isCameraOn ? (
               <div className="text-center space-y-2">
@@ -122,7 +171,7 @@ const Chatbox = () => {
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-medium text-secondary">Recording Controls</h4>
           </div>
-          <div className="flex justify-center gap-3">
+          <div className="flex justify-center gap-2 mb-3">
             <Button
               variant={isRecording ? "destructive" : "default"}
               size="sm"
@@ -134,15 +183,46 @@ const Chatbox = () => {
               ) : (
                 <Play className="w-4 h-4" />
               )}
-              <span className="ml-2">
+              <span className="ml-1">
                 {isRecording ? "Stop" : "Start"}
               </span>
             </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePreview}
+              disabled={!uploadedVideo && !recordedVideo}
+              className={cn(
+                "smooth-transition",
+                showPreview ? "bg-primary text-primary-foreground" : ""
+              )}
+            >
+              <Eye className="w-4 h-4" />
+              <span className="ml-1">Preview</span>
+            </Button>
           </div>
+          
+          <div className="flex justify-center">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={handleProcess}
+              disabled={(!uploadedVideo && !recordedVideo) || isProcessing}
+              className="smooth-transition w-full"
+            >
+              <ProcessIcon className="w-4 h-4" />
+              <span className="ml-2">
+                {isProcessing ? "Processing..." : "Upload & Process"}
+              </span>
+            </Button>
+          </div>
+          
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            {isRecording ? "Recording in progress..." : 
-             uploadedVideo ? "Video ready for analysis" :
-             "Press start to begin recording"}
+            {isProcessing ? "Analyzing video for emotional state..." :
+             isRecording ? "Recording in progress..." : 
+             (uploadedVideo || recordedVideo) ? "Video ready for analysis" :
+             "Record or upload video to begin"}
           </p>
         </Card>
       </div>
