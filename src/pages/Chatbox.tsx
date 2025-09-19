@@ -63,8 +63,8 @@ const Chatbox = () => {
     
     // Simulate recording completion and create a mock video URL
     if (!newRecordingState && isRecording) {
-      // Simulate recorded video (in real implementation, this would be the actual recorded blob URL)
-      setRecordedVideo("mock-recorded-video.mp4");
+      // Use the hardcoded video file
+      setRecordedVideo("/Video1.mp4");
     }
   };
 
@@ -92,9 +92,9 @@ const Chatbox = () => {
       
       let responseText = "";
       
-      // Check if the uploaded video is 'Video.mp4' for hardcoded response
-      if (uploadedVideo && uploadedVideo.name === 'Video.mp4') {
-        responseText = "I've analyzed your video and detected signs of stress and fear in your emotional state. You seemed stressed - here's a breathing exercise to help you calm down:\n\n1. **Box Breathing Technique:**\n   • Inhale slowly for 4 counts\n   • Hold your breath for 4 counts\n   • Exhale slowly for 4 counts\n   • Hold empty for 4 counts\n   • Repeat 4-6 times\n\n2. **Progressive Muscle Relaxation:**\n   • Tense your shoulders for 5 seconds, then relax\n   • Repeat with arms, hands, and facial muscles\n\n3. **Grounding Exercise:**\n   • Name 5 things you can see\n   • 4 things you can touch\n   • 3 things you can hear\n   • 2 things you can smell\n   • 1 thing you can taste\n\nTake some time to practice these techniques. Your well-being is crucial for mission success.";
+      // Check for hardcoded responses based on video
+      if ((uploadedVideo && uploadedVideo.name === 'Video.mp4') || recordedVideo === '/Video1.mp4') {
+        responseText = "I've analyzed your video and detected significant signs of **sadness and fear** in your emotional state. Your facial expressions and body language indicate distress. Here are immediate steps to help stabilize your emotional well-being:\n\n**🫁 Immediate Breathing Relief:**\n1. **4-7-8 Breathing:**\n   • Inhale through nose for 4 counts\n   • Hold breath for 7 counts\n   • Exhale through mouth for 8 counts\n   • Repeat 3-4 cycles\n\n**🧠 Emotional Grounding:**\n2. **5-4-3-2-1 Technique:**\n   • Name 5 things you can see\n   • 4 things you can touch\n   • 3 things you can hear\n   • 2 things you can smell\n   • 1 thing you can taste\n\n**💪 Physical Release:**\n3. **Progressive Muscle Relaxation:**\n   • Tense shoulders for 5 seconds, release\n   • Clench fists for 5 seconds, release\n   • Scrunch face muscles, then relax\n\n**Mission Protocol:** Your emotional state requires immediate attention. Please practice these techniques and report back in 15 minutes. Mission safety depends on crew psychological stability.";
       } else {
         responseText = `I've analyzed your ${uploadedVideo ? 'uploaded' : 'recorded'} video. Based on facial expressions and body language, I detect you appear calm but slightly fatigued. I recommend taking a 10-minute relaxation break and some deep breathing exercises. Your emotional state shows resilience, which is excellent for mission operations.`;
       }
@@ -137,14 +137,23 @@ const Chatbox = () => {
           
           <div className="aspect-video bg-muted rounded-lg flex items-center justify-center overflow-hidden">
             {showPreview && (uploadedVideo || recordedVideo) ? (
-              <div className="w-full h-full bg-black/20 flex items-center justify-center">
-                <div className="text-center space-y-2">
-                  <Video className="w-12 h-12 mx-auto text-primary" />
-                  <p className="text-sm text-primary font-medium">Video Preview</p>
-                  <p className="text-xs text-muted-foreground">
-                    {uploadedVideo ? uploadedVideo.name : "Recorded Video"}
-                  </p>
-                </div>
+              <div className="w-full h-full bg-black/20 flex items-center justify-center relative overflow-hidden">
+                {recordedVideo === '/Video1.mp4' ? (
+                  <video 
+                    src="/Video1.mp4" 
+                    className="w-full h-full object-cover"
+                    controls
+                    muted
+                  />
+                ) : (
+                  <div className="text-center space-y-2">
+                    <Video className="w-12 h-12 mx-auto text-primary" />
+                    <p className="text-sm text-primary font-medium">Video Preview</p>
+                    <p className="text-xs text-muted-foreground">
+                      {uploadedVideo ? uploadedVideo.name : "Recorded Video"}
+                    </p>
+                  </div>
+                )}
               </div>
             ) : uploadedVideo ? (
               <div className="text-center space-y-2">
