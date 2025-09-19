@@ -89,10 +89,20 @@ const Chatbox = () => {
     // Simulate processing
     setTimeout(() => {
       setIsProcessing(false);
+      
+      let responseText = "";
+      
+      // Check if the uploaded video is 'Video.mp4' for hardcoded response
+      if (uploadedVideo && uploadedVideo.name === 'Video.mp4') {
+        responseText = "I've analyzed your video and detected signs of stress and fear in your emotional state. You seemed stressed - here's a breathing exercise to help you calm down:\n\n1. **Box Breathing Technique:**\n   • Inhale slowly for 4 counts\n   • Hold your breath for 4 counts\n   • Exhale slowly for 4 counts\n   • Hold empty for 4 counts\n   • Repeat 4-6 times\n\n2. **Progressive Muscle Relaxation:**\n   • Tense your shoulders for 5 seconds, then relax\n   • Repeat with arms, hands, and facial muscles\n\n3. **Grounding Exercise:**\n   • Name 5 things you can see\n   • 4 things you can touch\n   • 3 things you can hear\n   • 2 things you can smell\n   • 1 thing you can taste\n\nTake some time to practice these techniques. Your well-being is crucial for mission success.";
+      } else {
+        responseText = `I've analyzed your ${uploadedVideo ? 'uploaded' : 'recorded'} video. Based on facial expressions and body language, I detect you appear calm but slightly fatigued. I recommend taking a 10-minute relaxation break and some deep breathing exercises. Your emotional state shows resilience, which is excellent for mission operations.`;
+      }
+      
       // Add AI response about the processed video
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: `I've analyzed your ${uploadedVideo ? 'uploaded' : 'recorded'} video. Based on facial expressions and body language, I detect you appear calm but slightly fatigued. I recommend taking a 10-minute relaxation break and some deep breathing exercises. Your emotional state shows resilience, which is excellent for mission operations.`,
+        text: responseText,
         sender: "ai",
         timestamp: new Date(),
       };
