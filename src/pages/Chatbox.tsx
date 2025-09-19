@@ -41,13 +41,25 @@ const Chatbox = () => {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const messageText = newMessage;
     setNewMessage("");
 
-    // Simulate AI response
+    // Simulate AI response with hardcoded responses for specific messages
     setTimeout(() => {
+      let responseText = "";
+      
+      // Check for specific hardcoded messages
+      if (messageText.toLowerCase().includes("nauseous") || messageText.toLowerCase().includes("feeling nauseous")) {
+        responseText = "I understand you're experiencing nausea along with the emotional distress. This combination requires immediate attention for your mission safety:\n\n**🤢 Nausea Management:**\n1. **Controlled Breathing:**\n   • Slow, deep breaths through nose\n   • Focus on exhaling longer than inhaling\n   • This helps calm your nervous system\n\n2. **Physical Position:**\n   • Sit upright if possible\n   • Keep head still and avoid sudden movements\n   • Fresh air circulation if available\n\n3. **Hydration Protocol:**\n   • Small sips of water at room temperature\n   • Avoid large quantities at once\n\n**⚠️ Mission Alert:** Nausea combined with emotional distress may indicate acute stress response. I'm monitoring your vital signs and will recommend medical consultation if symptoms persist. Please focus on the breathing techniques immediately.";
+      } else if (messageText.toLowerCase().includes("thanks") || messageText.toLowerCase().includes("thank")) {
+        responseText = "You're welcome, crew member. Your proactive approach to managing stress and physical symptoms shows excellent mission discipline. \n\n**📊 Status Update:**\n• Emotional support protocols: ✅ Initiated\n• Breathing techniques: ✅ Provided\n• Physical symptom management: ✅ Addressed\n\n**🚀 Mission Continuity:** I'll continue monitoring your well-being. Remember, seeking support is a sign of strength and professionalism. You're doing exactly what's needed to maintain mission readiness.\n\nFeel free to report any changes in your condition or if you need additional support techniques. MAITRI is here 24/7 for your psychological and physical well-being.";
+      } else {
+        responseText = "I've analyzed your emotional state and vital signs. As part of my mission support protocol, I'm here to help maintain your psychological balance. Would you like to discuss any concerns or discomfort you're experiencing?";
+      }
+      
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        text: "I've analyzed your emotional state and vital signs. As part of my mission support protocol, I'm here to help maintain your psychological balance. Would you like to discuss any concerns or discomfort you're experiencing?",
+        text: responseText,
         sender: "ai",
         timestamp: new Date(),
       };
